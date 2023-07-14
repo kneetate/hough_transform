@@ -78,10 +78,6 @@ public:
         }
 
         std::cout << "detected " << detected_line.size() << std::endl;
-        // _vote_map.convertTo(_vote_map, CV_8U, 255 / 100, 0);
-        // cv::imshow("vote", _vote_map);
-        // cv::imshow("mask", mask);
-        // cv::waitKey(0);
     }
 };
 
@@ -120,10 +116,8 @@ public:
         const int a_depth = int((_a_max - _a_min) / _a_step);
         const int p_depth = int((_p_max - _p_min) / _p_step);
         const int q_depth = int((_q_max - _q_min) / _q_step);
-        std::cout << "a,p,q = " << a_depth << " " << p_depth << " " << q_depth << std::endl;
         const int sizes[3] = {a_depth, p_depth, q_depth};
         _vote_map = cv::Mat(3, sizes, CV_32S);
-        std::cout << "map " << _vote_map.size() << std::endl;
         int rho = 0, theta = 0;
         for (size_t j = 0; j < mat.rows; j++)
         {
@@ -181,11 +175,6 @@ public:
                 }
             }
         }
-
-        // _vote_map.convertTo(_vote_map, CV_8U, 255 / 100, 0);
-        // cv::imshow("vote", _vote_map);
-        // cv::imshow("mask", mask);
-        // cv::waitKey(0);
     }
 };
 
@@ -193,6 +182,7 @@ int main(int argc, char **argv)
 {
     cv::Mat mat(cv::Size(500, 500), CV_8U, cv::Scalar(0));
     cv::Mat raw(cv::Size(500, 500), CV_8UC3, cv::Scalar(0, 0, 0));
+    // curve paramters for 4 curve
     double a[4] = {0.05, 0.01, 0.02, 0.03};
     double p[4] = {-30.0, -100.0, 50.0, 120.0};
     double q[4] = {-40.0, -30, -80, -130};
@@ -202,6 +192,7 @@ int main(int argc, char **argv)
 
     std::normal_distribution<> dist(0.0, 5.0);
 
+    // drawing 4 curves
     for (size_t i = 0; i < mat.cols; i++)
     {
         for (int k = 0; k < 4; k++)
@@ -218,6 +209,8 @@ int main(int argc, char **argv)
     cv::Mat mask;
     int thresh = 10;
     curve.detect(mat, mask, 10);
+
+    // overwrite the detected curves on the raw mat
     for (size_t j = 0; j < mat.rows; j++)
     {
         for (size_t i = 0; i < mat.cols; i++)
